@@ -1,0 +1,103 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: development
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'stable'
+      
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          version: 'latest'
+      
+      - name: Configure Kubernetes context
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      
+      - name: Get latest commit SHA
+        id: git-sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Update image tags in Kustomize
+        run: |
+          cd k8s/overlays/dev
+          kustomize edit set image ghcr.io/quest-api-gateway=ghcr.io/${{ github.repository }}/quest-api-gateway:${{ steps.git-sha.outputs.sha }}
+          kustomize edit set image ghcr.io/quest-user-service=ghcr.io/${{ github.repository }}/quest-user-service:${{ steps.git-sha.outputs.sha }}
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -k k8s/overlays/dev/
+          kubectl rollout status deployment/api-gateway -n quest-logger-dev
+          kubectl rollout status deployment/user-service -n quest-logger-dev
+      
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n quest-logger-dev
+          echo "Deployment to development environment completed!"
+
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'stable'
+      
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+        with:
+          version: 'latest'
+      
+      - name: Configure Kubernetes context
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      
+      - name: Get latest commit SHA
+        id: git-sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Update image tags in Kustomize
+        run: |
+          cd k8s/overlays/prod
+          kustomize edit set image ghcr.io/quest-api-gateway=ghcr.io/${{ github.repository }}/quest-api-gateway:${{ steps.git-sha.outputs.sha }}
+          kustomize edit set image ghcr.io/quest-user-service=ghcr.io/${{ github.repository }}/quest-user-service:${{ steps.git-sha.outputs.sha }}
+      
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -k k8s/overlays/prod/
+          kubectl rollout status deployment/api-gateway -n quest-logger-prod
+          kubectl rollout status deployment/user-service -n quest-logger-prod
+      
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n quest-logger-prod
+          echo "Deployment to production environment completed!" 

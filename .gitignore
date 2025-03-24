@@ -1,0 +1,169 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+.tox/
+.nox/
+.hypothesis/
+.mypy_cache/
+.pytype/
+.dmypy.json
+dmypy.json
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+env/
+ENV/
+
+# IDE/Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cursor/
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.tmproj
+*.esproj
+*.code-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Kubernetes
+kubectl
+minikube-linux-amd64
+kubeconfig
+.kube/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-lock.yaml
+.pnp.*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Icon?
+.directory
+
+# Testing
+coverage/
+.nyc_output
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Production build files
+/build
+/dist
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Database
+*.sqlite3
+*.db
+
+# Documentation builds
+docs/_build/
+site/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+out/
+
+# Miscellaneous
+.sass-cache/
+.env.development.local
+.env.test.local
+.env.production.local
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+.eslintcache
+.stylelintcache
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
